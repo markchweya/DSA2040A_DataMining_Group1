@@ -4,12 +4,44 @@ import joblib
 
 st.set_page_config(page_title="Mental Health Prediction", layout="centered")
 
-# Load trained model
+# Load the trained Random Forest model
 model = joblib.load('mental_health_model.pkl')
 
+# App title
 st.title("🧠 Mental Health Support Prediction App")
-st.write("This app predicts whether a person is likely to seek mental health treatment based on workplace and personal attributes.")
 
+# Section: How the model works
+with st.expander("ℹ️ How This App Works"):
+    st.markdown("""
+This prediction tool uses a machine learning model to determine whether someone is **likely** or **unlikely** to seek mental health treatment.
+
+### 🔍 Here's how it works:
+1. **You fill in the form** with details like your age, work setup, access to mental health support, and comfort discussing issues.
+2. The app prepares your input by converting your responses into numerical values (since the model only understands numbers).
+3. It then passes this information to a trained **Random Forest Classifier**, which was built using real survey data from people working in the tech industry.
+4. The model looks for patterns and makes a prediction:
+   - **🔵 Likely** to seek mental health treatment
+   - **🟢 Unlikely** to seek treatment
+
+> This is only a predictive tool and should not replace professional advice. Always seek proper help if you’re struggling.
+""")
+
+# Section: About the data
+with st.expander("📊 About the Data Source"):
+    st.markdown("""
+This app is powered by data from the **Mental Health in Tech Survey**, conducted by [OSMI (Open Sourcing Mental Illness)](https://osmihelp.org/).
+
+The dataset was collected from professionals working in the tech industry and includes responses related to:
+- Personal mental health history
+- Work environment and company size
+- Access to mental health resources
+- Comfort discussing mental health issues
+
+📁 **Dataset link on Kaggle:**  
+[https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)
+""")
+
+# User form
 with st.form("prediction_form"):
     st.subheader("🔍 Enter Your Details")
 
@@ -38,12 +70,14 @@ with st.form("prediction_form"):
 
     submitted = st.form_submit_button("Predict")
 
+# Handle form submission
 if submitted:
+    # Create input dictionary
     input_dict = {
-        "Timestamp": "2025-01-01 00:00:00",
+        "Timestamp": "2025-01-01 00:00:00",  # dummy timestamp
         "Age": age,
         "Gender": gender,
-        "Country": "Unknown",
+        "Country": "Unknown",  # default country
         "self_employed": self_employed,
         "family_history": family_history,
         "work_interfere": work_interfere,
@@ -68,11 +102,11 @@ if submitted:
 
     input_df = pd.DataFrame([input_dict])
 
-    # Encode all columns using factorize
+    # Encode with factorize (same as training)
     for col in input_df.columns:
         input_df[col] = pd.factorize(input_df[col])[0]
 
-    # ✅ Must match training column order
+    # Match column order from training
     column_order = [
         'Timestamp', 'Age', 'Gender', 'Country', 'self_employed', 'family_history',
         'work_interfere', 'no_employees', 'remote_work', 'tech_company', 'benefits',
@@ -83,8 +117,11 @@ if submitted:
     ]
     input_df = input_df[column_order]
 
-    # Predict
+    # Make prediction
     prediction = model.predict(input_df)[0]
-    result = "🔵 Likely to seek mental health treatment" if prediction == 1 else "🟢 Unlikely to seek treatment"
 
-    st.success(result)
+    # Display result
+    if prediction == 1:
+        st.success("🔵 Based on your input, you are **likely to seek mental health treatment.**")
+    else:
+        st.success("🟢 Based on your input, you are **unlikely to seek mental health treatment.**")
