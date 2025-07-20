@@ -3,10 +3,10 @@ import pandas as pd
 import joblib
 import os
 
-# Streamlit Page Config
-st.set_page_config(page_title="Mental Health Prediction (US Only)", layout="centered")
+# Page setup
+st.set_page_config(page_title="Mental Health Predictor (U.S. Tech)", layout="centered")
 
-# Load trained model
+# Load model
 model_path = os.path.join(os.path.dirname(__file__), 'mental_health_model.pkl')
 try:
     model = joblib.load(model_path)
@@ -14,88 +14,49 @@ except FileNotFoundError:
     st.error("❌ Model file not found. Please upload 'mental_health_model.pkl' to the app folder.")
     st.stop()
 
-# Title
-st.title("🇺🇸 Mental Health Treatment Prediction - U.S. Respondents")
+# App title
+st.title("🧠 Mental Health Treatment Predictor (U.S. Tech Survey)")
 
-# Info Sections
-with st.expander("ℹ️ How This App Works"):
+with st.expander("ℹ️ About this App"):
     st.markdown("""
-    This app predicts the likelihood of seeking mental health treatment based on selected personal and workplace factors.  
-    It uses a machine learning model trained **only on U.S. respondents** from the OSMI 2014 mental health survey.
-
-    > For learning purposes only — not a diagnostic tool.
+    This app predicts whether a person is likely to seek mental health treatment, based on responses to five key questions.
+    
+    - Trained on U.S.-only data from the 2014 OSMI Tech Survey
+    - Target variable: **Treatment sought (Yes/No)**
+    
+    ⚠️ This app is for demonstration only and not for clinical use.
     """)
 
-with st.expander("📊 About the Data"):
-    st.markdown("""
-    **Dataset:** [OSMI Mental Health in Tech Survey 2014](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)
+# Form
+with st.form("mh_form"):
+    st.subheader("📋 Please answer the following:")
 
-    **Model was trained on U.S.-only data**, with features like:
-    - Age, gender, self-employment
-    - Company size, mental health interference
-    - Access to mental health benefits, anonymity, etc.
-    """)
-
-# Form for user input
-with st.form("prediction_form"):
-    st.subheader("📝 Your Information")
-
-    age = st.slider("What is your age?", 18, 100, 30)
-    gender = st.selectbox("What is your gender?", ["Male", "Female", "Other"])
-    self_employed = st.selectbox("Are you self-employed?", ["Yes", "No"])
-    family_history = st.selectbox("Do you have a family history of mental illness?", ["Yes", "No"])
-    no_employees = st.selectbox("Company size?", ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"])
-    work_interfere = st.selectbox("Does mental health interfere with your work?", ["Never", "Rarely", "Sometimes", "Often"])
-    benefits = st.selectbox("Does your employer provide mental health benefits?", ["Yes", "No", "Don't know"])
-    care_options = st.selectbox("Access to mental health care options?", ["Yes", "No", "Not sure"])
-    anonymity = st.selectbox("Is your anonymity protected when discussing mental health?", ["Yes", "No", "Don't know"])
+    age = st.slider("1️⃣ Your Age", 18, 100, 30)
+    self_employed = st.selectbox("2️⃣ Are you self-employed?", ["Yes", "No"])
+    family_history = st.selectbox("3️⃣ Family history of mental illness?", ["Yes", "No"])
+    remote_work = st.selectbox("4️⃣ Do you work remotely?", ["Yes", "No"])
+    tech_company = st.selectbox("5️⃣ Do you work in a tech company?", ["Yes", "No"])
 
     submitted = st.form_submit_button("🔮 Predict")
 
-# Prediction logic
 if submitted:
-    # User input as dataframe
+    # Encode responses for model
     input_data = pd.DataFrame([{
-        'Age': age,
-        'Gender': gender,
-        'self_employed': self_employed,
-        'family_history': family_history,
-        'no_employees': no_employees,
-        'work_interfere': work_interfere,
-        'benefits': benefits,
-        'care_options': care_options,
-        'anonymity': anonymity
+        "Age": age,
+        "self_employed": 1 if self_employed == "Yes" else 0,
+        "family_history": 1 if family_history == "Yes" else 0,
+        "remote_work": 1 if remote_work == "Yes" else 0,
+        "tech_company": 1 if tech_company == "Yes" else 0
     }])
 
-    # Load training dataset to align columns
-    data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'us_model_data', 'training_model_dataset.csv')
-    try:
-        full_data = pd.read_csv(data_path)
-    except FileNotFoundError:
-        st.error("❌ Could not find training_model_dataset.csv in /data/us_model_data/.")
-        st.stop()
+    st.markdown("### 🔍 Model Input")
+    st.write(input_data)
 
-    # Drop target & combine with input
-    full_data.drop(columns=['treatment'], inplace=True)
-    combined = pd.concat([full_data, input_data], axis=0, ignore_index=True)
-    combined_encoded = pd.get_dummies(combined)
-
-    # Align with model's expected features
-    model_features = model.feature_names_in_
-    for col in model_features:
-        if col not in combined_encoded.columns:
-            combined_encoded[col] = 0
-
-    input_encoded = combined_encoded[model_features].tail(1)
-
-    # Prediction
-    prediction = model.predict(input_encoded)[0]
+    # Make prediction
+    prediction = model.predict(input_data)[0]
 
     # Output
     if prediction == 1:
-        st.success("🔵 Based on your responses, you are **likely** to seek mental health treatment.")
+        st.success("🧩 You are **likely** to seek mental health treatment.")
     else:
-        st.success("🟢 Based on your responses, you are **unlikely** to seek mental health treatment.")
-
-    with st.expander("🧪 Show Encoded Features"):
-        st.write(input_encoded)
+        st.info("🧩 You are **unlikely** to seek mental health treatment.")
