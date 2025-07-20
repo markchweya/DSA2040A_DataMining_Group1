@@ -1,22 +1,22 @@
 Timestamp,Age,Gender,Country,state,self_employed,family_history,treatment,work_interfere,no_employees,remote_work,tech_company,benefits,care_options,wellness_program,seek_help,anonymity,leave,mental_health_consequence,phys_health_consequence,coworkers,supervisor,mental_health_interview,phys_health_interview,mental_vs_physical,obs_consequence
-2014-08-27 11:29:31,37.0,Female,United States,Il,Unknown,No,Yes,Often,6-25,No,Yes,Yes,Not Sure,No,Yes,Yes,Somewhat Easy,No,No,Some Of Them,Yes,No,Maybe,Yes,No
-2014-08-27 11:29:37,44.0,Male,United States,In,Unknown,No,No,Rarely,More Than 1000,No,No,Don'T Know,No,Don'T Know,Don'T Know,Don'T Know,Don'T Know,Maybe,No,No,No,No,No,Don'T Know,No
-2014-08-27 11:29:44,32.0,Male,Canada,Not Applicable,Unknown,No,No,Rarely,6-25,No,Yes,No,No,No,No,Don'T Know,Somewhat Difficult,No,No,Yes,Yes,Yes,Yes,No,No
-2014-08-27 11:29:46,31.0,Male,United Kingdom,Not Applicable,Unknown,Yes,Yes,Often,26-100,No,Yes,No,Yes,No,No,No,Somewhat Difficult,Yes,Yes,Some Of Them,No,Maybe,Maybe,No,Yes
-2014-08-27 11:30:22,31.0,Male,United States,Tx,Unknown,No,No,Never,100-500,Yes,Yes,Yes,No,Don'T Know,Don'T Know,Don'T Know,Don'T Know,No,No,Some Of Them,Yes,Yes,Yes,Don'T Know,No
-2014-08-27 11:31:22,33.0,Male,United States,Tn,Unknown,Yes,No,Sometimes,6-25,No,Yes,Yes,Not Sure,No,Don'T Know,Don'T Know,Don'T Know,No,No,Yes,Yes,No,Maybe,Don'T Know,No
-2014-08-27 11:31:50,35.0,Female,United States,Mi,Unknown,Yes,Yes,Sometimes,1-5,Yes,Yes,No,No,No,No,No,Somewhat Difficult,Maybe,Maybe,Some Of Them,No,No,No,Don'T Know,No
-2014-08-27 11:32:05,39.0,Male,Canada,Not Applicable,Unknown,No,No,Never,1-5,Yes,Yes,No,Yes,No,No,Yes,Don'T Know,No,No,No,No,No,No,No,No
-2014-08-27 11:32:39,42.0,Female,United States,Il,Unknown,Yes,Yes,Sometimes,100-500,No,Yes,Yes,Yes,No,No,No,Very Difficult,Maybe,No,Yes,Yes,No,Maybe,No,No
-2014-08-27 11:32:43,23.0,Male,Canada,Not Applicable,Unknown,No,No,Never,26-100,No,Yes,Don'T Know,No,Don'T Know,Don'T Know,Don'T Know,Don'T Know,No,No,Yes,Yes,Maybe,Maybe,Yes,No
-2014-08-27 11:32:44,31.0,Male,United States,Oh,Unknown,No,Yes,Sometimes,6-25,Yes,Yes,Don'T Know,No,No,No,Don'T Know,Don'T Know,No,No,Some Of Them,Yes,No,No,Don'T Know,No
-2014-08-27 11:32:49,29.0,Male,Bulgaria,Not Applicable,Unknown,No,No,Never,100-500,Yes,Yes,Don'T Know,Not Sure,No,No,Don'T Know,Don'T Know,No,No,Yes,Yes,Yes,Yes,Don'T Know,No
-2014-08-27 11:33:23,42.0,Female,United States,Ca,Unknown,Yes,Yes,Sometimes,26-100,No,No,Yes,Yes,No,No,Don'T Know,Somewhat Difficult,Yes,Yes,Yes,Yes,Maybe,Maybe,No,Yes
-2014-08-27 11:33:26,36.0,Male,United States,Ct,Unknown,Yes,No,Never,500-1000,No,Yes,Don'T Know,Not Sure,No,Don'T Know,Don'T Know,Don'T Know,No,No,Yes,Yes,No,No,Don'T Know,No
-2014-08-27 11:33:57,27.0,Male,Canada,Not Applicable,Unknown,No,No,Never,6-25,No,Yes,Don'T Know,Not Sure,Don'T Know,Don'T Know,Don'T Know,Somewhat Easy,No,No,Some Of Them,Some Of Them,Maybe,Yes,Yes,No
-2014-08-27 11:34:00,29.0,Female,United States,Il,Unknown,Yes,Yes,Rarely,26-100,No,Yes,Yes,Not Sure,No,No,Don'T Know,Somewhat Easy,No,No,Yes,Some Of Them,Maybe,Maybe,Don'T Know,No
-2014-08-27 11:34:20,23.0,Male,United Kingdom,Not Applicable,Unknown,No,Yes,Sometimes,26-100,Yes,Yes,Don'T Know,No,Don'T Know,Don'T Know,Don'T Know,Very Easy,Maybe,No,Some Of Them,No,Maybe,Maybe,No,No
-2014-08-27 11:34:37,32.0,Male,United States,Tn,Unknown,No,Yes,Sometimes,6-25,No,Yes,Yes,Yes,No,Don'T Know,Don'T Know,Don'T Know,Maybe,No,Some Of Them,Yes,No,No,No,No
+2014-08-27 11:29:31,37.0,Female,United States,Il,No,No,Yes,Often,6-25,No,Yes,Yes,Not Sure,No,Yes,Yes,Somewhat Easy,No,No,Some Of Them,Yes,No,Maybe,Yes,No
+2014-08-27 11:29:37,44.0,Male,United States,In,No,No,No,Rarely,More Than 1000,No,No,Don'T Know,No,Don'T Know,Don'T Know,Don'T Know,Don'T Know,Maybe,No,No,No,No,No,Don'T Know,No
+2014-08-27 11:29:44,32.0,Male,Canada,Not Applicable,No,No,No,Rarely,6-25,No,Yes,No,No,No,No,Don'T Know,Somewhat Difficult,No,No,Yes,Yes,Yes,Yes,No,No
+2014-08-27 11:29:46,31.0,Male,United Kingdom,Not Applicable,No,Yes,Yes,Often,26-100,No,Yes,No,Yes,No,No,No,Somewhat Difficult,Yes,Yes,Some Of Them,No,Maybe,Maybe,No,Yes
+2014-08-27 11:30:22,31.0,Male,United States,Tx,No,No,No,Never,100-500,Yes,Yes,Yes,No,Don'T Know,Don'T Know,Don'T Know,Don'T Know,No,No,Some Of Them,Yes,Yes,Yes,Don'T Know,No
+2014-08-27 11:31:22,33.0,Male,United States,Tn,No,Yes,No,Sometimes,6-25,No,Yes,Yes,Not Sure,No,Don'T Know,Don'T Know,Don'T Know,No,No,Yes,Yes,No,Maybe,Don'T Know,No
+2014-08-27 11:31:50,35.0,Female,United States,Mi,No,Yes,Yes,Sometimes,1-5,Yes,Yes,No,No,No,No,No,Somewhat Difficult,Maybe,Maybe,Some Of Them,No,No,No,Don'T Know,No
+2014-08-27 11:32:05,39.0,Male,Canada,Not Applicable,No,No,No,Never,1-5,Yes,Yes,No,Yes,No,No,Yes,Don'T Know,No,No,No,No,No,No,No,No
+2014-08-27 11:32:39,42.0,Female,United States,Il,No,Yes,Yes,Sometimes,100-500,No,Yes,Yes,Yes,No,No,No,Very Difficult,Maybe,No,Yes,Yes,No,Maybe,No,No
+2014-08-27 11:32:43,23.0,Male,Canada,Not Applicable,No,No,No,Never,26-100,No,Yes,Don'T Know,No,Don'T Know,Don'T Know,Don'T Know,Don'T Know,No,No,Yes,Yes,Maybe,Maybe,Yes,No
+2014-08-27 11:32:44,31.0,Male,United States,Oh,No,No,Yes,Sometimes,6-25,Yes,Yes,Don'T Know,No,No,No,Don'T Know,Don'T Know,No,No,Some Of Them,Yes,No,No,Don'T Know,No
+2014-08-27 11:32:49,29.0,Male,Bulgaria,Not Applicable,No,No,No,Never,100-500,Yes,Yes,Don'T Know,Not Sure,No,No,Don'T Know,Don'T Know,No,No,Yes,Yes,Yes,Yes,Don'T Know,No
+2014-08-27 11:33:23,42.0,Female,United States,Ca,No,Yes,Yes,Sometimes,26-100,No,No,Yes,Yes,No,No,Don'T Know,Somewhat Difficult,Yes,Yes,Yes,Yes,Maybe,Maybe,No,Yes
+2014-08-27 11:33:26,36.0,Male,United States,Ct,No,Yes,No,Never,500-1000,No,Yes,Don'T Know,Not Sure,No,Don'T Know,Don'T Know,Don'T Know,No,No,Yes,Yes,No,No,Don'T Know,No
+2014-08-27 11:33:57,27.0,Male,Canada,Not Applicable,No,No,No,Never,6-25,No,Yes,Don'T Know,Not Sure,Don'T Know,Don'T Know,Don'T Know,Somewhat Easy,No,No,Some Of Them,Some Of Them,Maybe,Yes,Yes,No
+2014-08-27 11:34:00,29.0,Female,United States,Il,No,Yes,Yes,Rarely,26-100,No,Yes,Yes,Not Sure,No,No,Don'T Know,Somewhat Easy,No,No,Yes,Some Of Them,Maybe,Maybe,Don'T Know,No
+2014-08-27 11:34:20,23.0,Male,United Kingdom,Not Applicable,No,No,Yes,Sometimes,26-100,Yes,Yes,Don'T Know,No,Don'T Know,Don'T Know,Don'T Know,Very Easy,Maybe,No,Some Of Them,No,Maybe,Maybe,No,No
+2014-08-27 11:34:37,32.0,Male,United States,Tn,No,No,Yes,Sometimes,6-25,No,Yes,Yes,Yes,No,Don'T Know,Don'T Know,Don'T Know,Maybe,No,Some Of Them,Yes,No,No,No,No
 2014-08-27 11:34:53,46.0,Male,United States,Md,Yes,Yes,No,Sometimes,1-5,Yes,Yes,Yes,Not Sure,Yes,Don'T Know,Yes,Very Easy,No,No,Yes,Yes,No,Yes,Yes,Yes
 2014-08-27 11:35:08,36.0,Male,France,Not Applicable,Yes,Yes,No,Unknown,6-25,Yes,Yes,No,No,Yes,No,Yes,Somewhat Easy,No,No,Some Of Them,Some Of Them,Maybe,Maybe,Don'T Know,No
 2014-08-27 11:35:12,29.0,Male,United States,Ny,No,Yes,Yes,Sometimes,100-500,No,Yes,Yes,Yes,No,No,No,Somewhat Difficult,Maybe,No,Some Of Them,Some Of Them,No,No,No,No
