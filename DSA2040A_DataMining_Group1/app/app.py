@@ -2,12 +2,11 @@ import streamlit as st
 import pandas as pd
 import joblib
 import os
-from sklearn.preprocessing import LabelEncoder
 
 # Streamlit Page Config
-st.set_page_config(page_title="Mental Health Prediction", layout="centered")
+st.set_page_config(page_title="Mental Health Prediction (US Only)", layout="centered")
 
-# 🔹 Load Model
+# Load trained model
 model_path = os.path.join(os.path.dirname(__file__), 'mental_health_model.pkl')
 try:
     model = joblib.load(model_path)
@@ -15,119 +14,81 @@ except FileNotFoundError:
     st.error("❌ Model file not found. Please upload 'mental_health_model.pkl' to the app folder.")
     st.stop()
 
-# 🔹 Title
-st.title("🧠 Mental Health Support Prediction App")
+# Title
+st.title("🇺🇸 Mental Health Treatment Prediction - U.S. Respondents")
 
-# 🔹 Info
+# Information sections
 with st.expander("ℹ️ How This App Works"):
     st.markdown("""
-This app predicts if a person is likely to seek mental health treatment using a machine learning model trained on tech industry survey data.
+    This app predicts the likelihood of seeking mental health treatment based on workplace factors and personal background. 
+    It uses a model trained **exclusively on U.S. respondents** from the 2014 OSMI tech survey.
 
-**Prediction is based on:**
-- Age, gender, work situation
-- Workplace mental health support
-- Attitudes and policies
-
-> This is an educational tool. It’s not a substitute for clinical evaluation.
-""")
+    > This is for educational purposes only. It’s not a diagnostic tool.
+    """)
 
 with st.expander("📊 About the Data"):
     st.markdown("""
-We used the **OSMI Mental Health in Tech Survey** dataset:  
-[https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)
+    Data Source: [OSMI Mental Health in Tech Survey 2014](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)
 
-It includes responses from thousands of tech workers about mental health challenges and treatment patterns.
-""")
+    We used cleaned and preprocessed data limited to respondents from the United States. The model was trained after:
+    - Filtering to U.S.-only
+    - Label encoding relevant features
+    - Dropping irrelevant or empty fields (e.g., Timestamp, state)
+    - Selecting "treatment" as the target variable
+    """)
 
-# 🔹 Form
+# Form
 with st.form("prediction_form"):
-    st.subheader("📝 Your Info")
+    st.subheader("📝 Your Information")
 
-    age = st.slider("Age", 18, 100, 25)
+    age = st.slider("Age", 18, 100, 30)
     gender = st.selectbox("Gender", ["Male", "Female", "Other"])
-    self_employed = st.selectbox("Are you self-employed?", ["Yes", "No", "Unknown"])
+    self_employed = st.selectbox("Are you self-employed?", ["Yes", "No"])
     family_history = st.selectbox("Family history of mental illness?", ["Yes", "No"])
-    work_interfere = st.selectbox("Mental health interferes with work?", ["Often", "Rarely", "Never", "Sometimes", "Don’t know"])
     no_employees = st.selectbox("Company size", ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"])
-    remote_work = st.selectbox("Do you work remotely?", ["Yes", "No"])
-    tech_company = st.selectbox("Is your company a tech company?", ["Yes", "No"])
+    work_interfere = st.selectbox("Does mental health interfere with work?", ["Never", "Rarely", "Sometimes", "Often"])
     benefits = st.selectbox("Employer provides mental health benefits?", ["Yes", "No", "Don't know"])
     care_options = st.selectbox("Access to mental health care options?", ["Yes", "No", "Not sure"])
-    wellness_program = st.selectbox("Company has a wellness program?", ["Yes", "No", "Don't know"])
     anonymity = st.selectbox("Is your anonymity protected?", ["Yes", "No", "Don't know"])
-    leave = st.selectbox("Ease of taking leave for mental health?", 
-                         ["Very easy", "Somewhat easy", "Somewhat difficult", "Very difficult", "Don't know"])
-    mental_health_consequence = st.selectbox("Mental health affects career?", ["Yes", "No", "Maybe"])
-    phys_health_consequence = st.selectbox("Physical health affects career?", ["Yes", "No", "Maybe"])
-    coworkers = st.selectbox("Comfortable talking to coworkers?", ["Yes", "No", "Some of them"])
-    supervisor = st.selectbox("Comfortable talking to supervisor?", ["Yes", "No", "Some of them"])
-    mental_health_interview = st.selectbox("Discuss mental health in interview?", ["Yes", "No", "Maybe"])
-    phys_health_interview = st.selectbox("Discuss physical health in interview?", ["Yes", "No", "Maybe"])
-    mental_vs_physical = st.selectbox("Is mental health equal to physical?", ["Yes", "No", "Don't know"])
-    obs_consequence = st.selectbox("Observed consequences of mental health disclosure?", ["Yes", "No"])
 
     submitted = st.form_submit_button("🔮 Predict")
 
-# 🔹 On Submit
 if submitted:
-    # Create a sample row
-    input_dict = {
-        "Timestamp": "2025-01-01 00:00:00",
-        "Age": age,
-        "Gender": gender,
-        "Country": "Unknown",
-        "self_employed": self_employed,
-        "family_history": family_history,
-        "work_interfere": work_interfere,
-        "no_employees": no_employees,
-        "remote_work": remote_work,
-        "tech_company": tech_company,
-        "benefits": benefits,
-        "care_options": care_options,
-        "wellness_program": wellness_program,
-        "seek_help": "Don't know",
-        "anonymity": anonymity,
-        "leave": leave,
-        "mental_health_consequence": mental_health_consequence,
-        "phys_health_consequence": phys_health_consequence,
-        "coworkers": coworkers,
-        "supervisor": supervisor,
-        "mental_health_interview": mental_health_interview,
-        "phys_health_interview": phys_health_interview,
-        "mental_vs_physical": mental_vs_physical,
-        "obs_consequence": obs_consequence
-    }
+    input_data = pd.DataFrame([{
+        'Age': age,
+        'Gender': gender,
+        'self_employed': self_employed,
+        'family_history': family_history,
+        'no_employees': no_employees,
+        'work_interfere': work_interfere,
+        'benefits': benefits,
+        'care_options': care_options,
+        'anonymity': anonymity
+    }])
 
-    input_df = pd.DataFrame([input_dict])
+    # Preprocessing: one-hot encode categorical values to match model input
+    data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'us_model_data', 'training_model_dataset.csv')
+    full_feature_df = pd.read_csv(data_path)
+    full_feature_df.drop(columns=['treatment'], inplace=True)
+    full_feature_df = pd.concat([full_feature_df, input_data], axis=0, ignore_index=True)
+    full_feature_df = pd.get_dummies(full_feature_df)
+    input_encoded = full_feature_df.tail(1)
 
-    # Encode with LabelEncoder per column (simulate training)
-    for col in input_df.columns:
-        if input_df[col].dtype == object:
-            input_df[col] = LabelEncoder().fit_transform(input_df[col])
+    # Align with model training columns
+    model_features = model.feature_names_in_
+    missing_cols = set(model_features) - set(input_encoded.columns)
+    for col in missing_cols:
+        input_encoded[col] = 0
+    input_encoded = input_encoded[model_features]
 
-    # Column order
-    column_order = [
-        'Timestamp', 'Age', 'Gender', 'Country', 'self_employed', 'family_history',
-        'work_interfere', 'no_employees', 'remote_work', 'tech_company', 'benefits',
-        'care_options', 'wellness_program', 'seek_help', 'anonymity', 'leave',
-        'mental_health_consequence', 'phys_health_consequence', 'coworkers',
-        'supervisor', 'mental_health_interview', 'phys_health_interview',
-        'mental_vs_physical', 'obs_consequence'
-    ]
+    # Prediction
+    prediction = model.predict(input_encoded)[0]
 
-    input_df = input_df[column_order]
-
-    # Predict
-    prediction = model.predict(input_df)[0]
-
-    # Show result
+    # Result
     if prediction == 1:
-        st.success("🔵 You are **likely** to seek mental health treatment.")
+        st.success("🔵 Based on your responses, you are **likely** to seek mental health treatment.")
     else:
-        st.success("🟢 You are **unlikely** to seek mental health treatment.")
+        st.success("🟢 Based on your responses, you are **unlikely** to seek mental health treatment.")
 
-    # Debug (optional)
-    with st.expander("🧪 See Encoded Input & Prediction"):
-        st.write("Encoded Input:")
-        st.dataframe(input_df)
-        st.write("Raw Prediction:", prediction)
+    with st.expander("🧪 Show Processed Input"):
+        st.write(input_encoded)
