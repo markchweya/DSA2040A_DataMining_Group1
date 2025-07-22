@@ -5,7 +5,7 @@ import time
 import os
 
 # Load the model from the correct relative path
-model_path = os.path.join("app/mental_health_model.pkl")
+model_path = os.path.join("app", "mental_health_model.pkl")
 try:
     model = joblib.load(model_path)
 except FileNotFoundError:
