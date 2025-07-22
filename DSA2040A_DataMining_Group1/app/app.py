@@ -11,11 +11,11 @@ model_path = os.path.join(os.path.dirname(__file__), 'mental_health_model.pkl')
 try:
     model = joblib.load(model_path)
 except FileNotFoundError:
-    st.error("❌ Model file not found. Please upload 'mental_health_model.pkl' to the app folder.")
+    st.error(" Model file not found. Please upload 'mental_health_model.pkl' to the app folder.")
     st.stop()
 
 # App title
-st.title("🧠 Mental Health Treatment Predictor (U.S. Tech Survey)")
+st.title(" Mental Health Treatment Predictor (U.S. Tech Survey)")
 
 with st.expander("ℹ️ About this App"):
     st.markdown("""
@@ -29,7 +29,7 @@ with st.expander("ℹ️ About this App"):
 
 # Form
 with st.form("mh_form"):
-    st.subheader("📋 Please answer the following:")
+    st.subheader(" Please answer the following:")
 
     age = st.slider("1️⃣ Your Age", 18, 100, 30)
     self_employed = st.selectbox("2️⃣ Are you self-employed?", ["Yes", "No"])
