@@ -37,7 +37,7 @@ with st.form("mh_form"):
     remote_work = st.selectbox("4️⃣ Do you work remotely?", ["Yes", "No"])
     tech_company = st.selectbox("5️⃣ Do you work in a tech company?", ["Yes", "No"])
 
-    submitted = st.form_submit_button("🔮 Predict")
+    submitted = st.form_submit_button(" Predict")
 
 if submitted:
     # Encode responses for model
@@ -49,7 +49,7 @@ if submitted:
         "tech_company": 1 if tech_company == "Yes" else 0
     }])
 
-    st.markdown("### 🔍 Model Input")
+    st.markdown("###  Model Input")
     st.write(input_data)
 
     # Make prediction
