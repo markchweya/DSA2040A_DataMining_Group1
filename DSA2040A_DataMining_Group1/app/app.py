@@ -103,7 +103,7 @@ st.markdown("""
 # SIDEBAR MENU
 # --------------------
 st.sidebar.header("Menu")
-menu = st.sidebar.radio("Navigate", ["🏠 Home", "📜 Privacy Policy"], key="menu_radio")
+menu = st.sidebar.radio("Navigate", ["Home", "Privacy Policy"], key="menu_radio")
 
 # --------------------
 # SESSION STATE
@@ -115,8 +115,8 @@ if "page" not in st.session_state:
 # WELCOME PAGE
 # --------------------
 if st.session_state.page == "welcome":
-    if menu == "📜 Privacy Policy":
-        st.markdown("## 📜 Privacy Policy")
+    if menu == "Privacy Policy":
+        st.markdown("##Privacy Policy")
         st.write("""
         This app is for **educational and fun purposes only**.  
         - No personal data is stored.  
