@@ -226,9 +226,9 @@ elif st.session_state.page == "results":
 
 # -------------------- DOCUMENTATION PAGE --------------------
 elif st.session_state.page == "documentation":
-    st.title("Documentation")
+    st.title("Project Documentation")
 
-    # Small menu for documentation
+    # Documentation menu
     doc_sections = [
         "Overview",
         "How It Works",
@@ -240,73 +240,144 @@ elif st.session_state.page == "documentation":
         "Contact & Support"
     ]
 
-    selected_section = st.radio("Select Section", doc_sections, horizontal=True, key="doc_menu")
+    selected_section = st.radio("Select Documentation Section", doc_sections, horizontal=True, key="doc_menu")
 
     if selected_section == "Overview":
         st.subheader("Overview")
-        st.write("""
-        This app predicts whether a user is likely to seek mental health treatment
-        based on a few survey questions. It is powered by a machine learning model
-        trained on mental health survey data.
+        st.markdown("""
+        **DSA2040A Data Mining Project – Group 1**  
+        **Project Title:** Mental Health Support Prediction in Tech (U.S. Respondents)
+
+        This project demonstrates how machine learning can be used to **predict whether a tech employee is likely to seek mental health treatment** 
+        based on workplace and personal factors.
+
+        **Key Highlights:**
+        - Uses 2014 OSMI Mental Health in Tech Survey data (U.S.-only respondents)
+        - Covers the full data science lifecycle: **ETL → Data Cleaning → EDA → Modeling → Deployment**
+        - Deployed as an **interactive Streamlit web app** with downloadable reports
         """)
 
     elif selected_section == "How It Works":
         st.subheader("How It Works")
         st.markdown("""
-        1. User answers a few demographic and work-related questions.
-        2. Responses are encoded and fed into a trained ML model.
-        3. The model predicts the likelihood of seeking mental health treatment.
-        4. Results are displayed with a confidence score and downloadable PDF.
+        1. **User Inputs Data:**  
+           The app collects basic information such as age, self-employment, family history of mental illness, and work conditions.
+
+        2. **Preprocessing:**  
+           Inputs are transformed into numerical features that the model understands.
+
+        3. **Prediction:**  
+           A **Random Forest Classifier** predicts the probability of the user seeking mental health treatment.
+
+        4. **Results & Confidence:**  
+           The app displays:
+           - Prediction outcome (Likely / Unlikely to seek treatment)
+           - Confidence score with an approximate 95% confidence interval
+           - Downloadable PDF report summarizing the results
+
+        5. **No Data Stored:**  
+           All processing is done in-memory, and no personal data is saved.
         """)
 
     elif selected_section == "Terms of Use":
         st.subheader("Terms of Use")
         st.markdown("""
-        - This app is for educational and demonstration purposes only.
-        - It should **not** be used for medical or diagnostic decisions.
-        - By using this app, you acknowledge that results are **not professional advice**.
+        By using this application, you agree to the following:
+        
+        - This tool is **for educational and demonstration purposes only**.  
+        - It does **not** provide medical or professional mental health advice.  
+        - Users should **not** rely on this application for diagnosis or treatment decisions.  
+        - The authors are **not liable** for any actions taken based on this tool.
         """)
 
     elif selected_section == "Privacy Policy":
         st.subheader("Privacy Policy")
         st.markdown("""
-        - No personal data is stored or shared.
-        - All processing occurs in memory and is cleared upon session end.
-        - Users can freely use the predictor without risk to their privacy.
+        We respect your privacy. This application:
+        
+        - Does **not collect, store, or share any personal data**.  
+        - Processes all user inputs **locally in memory**.  
+        - Clears session data when the session ends.  
+        - Is designed to demonstrate machine learning without compromising user privacy.
         """)
 
     elif selected_section == "Project Contributors":
         st.subheader("Project Contributors")
         st.markdown("""
-        **DSA2040A Data Mining Group 1**  
-        - Mark Chweya  
-        - [Add all team members here]
+        **Team: DSA2040A Data Mining – Group 1**
+        
+        | Name       | Role & Contribution |
+        |-----------|---------------------|
+        | **Nathan**    | End-to-end data pipeline and orchestration |
+        | **Nicholas**  | Data wrangling, encoding, and enrichment |
+        | **Faith**     | Exploratory Data Analysis and Statistical Modeling |
+        | **Merhawit**  | Machine Learning modeling and classification metrics |
+        | **Mark Chweya** | Dashboard creation, Streamlit app development, documentation |
         """)
 
     elif selected_section == "ReadMe":
         st.subheader("Project ReadMe")
         st.markdown("""
-        This project was developed as part of the DSA2040A Data Mining course.
-        It demonstrates the use of Machine Learning for mental health prediction.
-        
-        Features:
-        - Interactive Streamlit web app
-        - Machine learning model integration
-        - PDF report download
-        - Educational and privacy-friendly
+        **Project:** Mental Health Support Prediction in Tech  
+        **Dataset:** OSMI Mental Health in Tech Survey (2014, U.S.-only)  
+
+        **Machine Learning Summary:**
+        - **Target:** Likelihood of seeking treatment
+        - **Model:** Random Forest Classifier
+        - **Accuracy:** ~61%
+        - **F1 Score (treatment-seeking class):** ~66%
+
+        **Key Features Used:**
+        - Age
+        - Gender
+        - Self-employment status
+        - Family history of mental illness
+        - Company size
+        - Work interference due to mental health
+        - Employer-provided benefits
+        - Access to care options
+        - Anonymity protection
+
+        **Insights:**
+        - Workers with family history and no anonymity protection were more likely to seek treatment.
+        - Smaller companies tended to lack mental health support programs.
+        - Access to benefits and care options positively influenced treatment-seeking behavior.
+
+        **Project Structure:**
+        ```
+        DSA2040A_DataMining_Group1/
+        ├── app/
+        │   └── app.py              # Streamlit app
+        ├── data/
+        │   └── training_model_dataset.csv
+        ├── models/
+        │   └── mental_health_model.pkl
+        ├── notebooks/
+        │   ├── 1_cleaning_and_filtering.ipynb
+        │   ├── 2_exploratory_analysis_us.py
+        │   ├── 3_classification_model.ipynb
+        │   └── 4_dashboard_insights.ipynb
+        ├── requirements.txt
+        └── README.md
+        ```
+
+        **Future Improvements:**
+        - Retrain with newer datasets (e.g., post-COVID surveys)
+        - Include SHAP feature interpretability
+        - Add demographic visualizations
         """)
 
     elif selected_section == "GitHub Repository":
         st.subheader("GitHub Repository")
         st.markdown("""
-        The complete source code for this project is available here:  
-        [Visit GitHub Repo](https://github.com/markchweya/DSA2040A_DataMining_Group1)
+        The complete project source code is available here:  
+        [GitHub Repo](https://github.com/markchweya/DSA2040A_DataMining_Group1)
         """)
 
     elif selected_section == "Contact & Support":
         st.subheader("Contact & Support")
         st.markdown("""
-        For inquiries or support, contact: **markchweya@example.com**  
+        For inquiries or support, contact: **chweyamark@gmail.com**  
         """)    
 
     # Back to Home Button
