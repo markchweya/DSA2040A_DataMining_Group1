@@ -131,7 +131,7 @@ if st.session_state.page == "welcome":
 
     privacy_accepted = st.checkbox("I agree to the Privacy Terms")
     if st.button("Let's Go! ▶", key="start", disabled=not privacy_accepted):
-        st.balloons()  # ✅ Only here
+        st.balloons()  # Only here
         time.sleep(1.5)
         st.session_state.page = "model"
         st.rerun()
@@ -203,7 +203,7 @@ elif st.session_state.page == "results":
     # ❄️ Snow animation
     st.snow()
 
-    st.title("Your Prediction Result ")
+    st.title("Your Prediction Result")
 
     result_text = "You seem likely to seek mental health support." if prediction == 1 else "You seem unlikely to seek mental health support."
     color = "#f6ffed" if prediction == 1 else "#fffbe6"
@@ -232,7 +232,7 @@ elif st.session_state.page == "results":
     # SIMPLE EXPLANATION
     # --------------------
     st.markdown("### Why might the model think this?")
-    st.markdown("This is a **toy model**, but here are some playful insights:")
+    st.markdown("Here are some insights:")
     if answers["Family History"] == "Yes":
         st.markdown("- Having a family history of mental illness is often linked to being more open to seeking treatment.")
     if answers["Self-employed"] == "Yes":
@@ -240,3 +240,10 @@ elif st.session_state.page == "results":
     if answers["Remote Work"] == "Yes":
         st.markdown("- Working remotely sometimes correlates with different mental health patterns.")
     st.markdown("Remember, this is **just for fun and education**, not a medical opinion.")
+
+    # --------------------
+    # BACK BUTTON
+    # --------------------
+    if st.button("⬅ Back to Predictor"):
+        st.session_state.page = "model"
+        st.rerun()
