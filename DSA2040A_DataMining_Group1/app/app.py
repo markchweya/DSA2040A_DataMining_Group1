@@ -228,128 +228,45 @@ elif st.session_state.page == "results":
 elif st.session_state.page == "documentation":
     st.title("Project Documentation")
 
-    # Documentation menu
-    doc_sections = [
-        "Overview",
-        "How It Works",
-        "Terms of Use",
-        "Privacy Policy",
-        "Project Contributors",
-        "ReadMe",
-        "GitHub Repository",
-        "Contact & Support"
-    ]
+    # --- Collapsible Menu ---
+    with st.expander("📄 Show Documentation Menu", expanded=True):
+        menu_items = [
+            "Overview",
+            "Getting Started",
+            "Project Structure",
+            "Machine Learning Summary",
+            "Key Insights",
+            "Future Improvements",
+            "Contributors",
+            "Contact & Support"
+        ]
+        doc_section = st.radio("Select a section to view:", menu_items, key="doc_menu")
 
-    selected_section = st.radio("Select Documentation Section", doc_sections, horizontal=True, key="doc_menu")
-
-    if selected_section == "Overview":
-        st.subheader("Overview")
-        st.markdown("""
-        **DSA2040A Data Mining Project – Group 1**  
-        **Project Title:** Mental Health Support Prediction in Tech (U.S. Respondents)
-
-        This project demonstrates how machine learning can be used to **predict whether a tech employee is likely to seek mental health treatment** 
-        based on workplace and personal factors.
-
-        **Key Highlights:**
-        - Uses 2014 OSMI Mental Health in Tech Survey data (U.S.-only respondents)
-        - Covers the full data science lifecycle: **ETL → Data Cleaning → EDA → Modeling → Deployment**
-        - Deployed as an **interactive Streamlit web app** with downloadable reports
+    # --- Content Rendering ---
+    if doc_section == "Overview":
+        st.header("Overview")
+        st.write("""
+        This project predicts the likelihood of employees seeking mental health support
+        using survey data from the 2014 OSMI Mental Health in Tech dataset...
         """)
 
-    elif selected_section == "How It Works":
-        st.subheader("How It Works")
+    elif doc_section == "Getting Started":
+        st.header("Getting Started")
         st.markdown("""
-        1. **User Inputs Data:**  
-           The app collects basic information such as age, self-employment, family history of mental illness, and work conditions.
-
-        2. **Preprocessing:**  
-           Inputs are transformed into numerical features that the model understands.
-
-        3. **Prediction:**  
-           A **Random Forest Classifier** predicts the probability of the user seeking mental health treatment.
-
-        4. **Results & Confidence:**  
-           The app displays:
-           - Prediction outcome (Likely / Unlikely to seek treatment)
-           - Confidence score with an approximate 95% confidence interval
-           - Downloadable PDF report summarizing the results
-
-        5. **No Data Stored:**  
-           All processing is done in-memory, and no personal data is saved.
+        **Run Locally:**
+        1. Clone the repo: `git clone https://github.com/markchweya/DSA2040A_DataMining_Group1.git`
+        2. Install dependencies: `pip install -r requirements.txt`
+        3. Launch app: `streamlit run app/app.py`
         """)
 
-    elif selected_section == "Terms of Use":
-        st.subheader("Terms of Use")
-        st.markdown("""
-        By using this application, you agree to the following:
-        
-        - This tool is **for educational and demonstration purposes only**.  
-        - It does **not** provide medical or professional mental health advice.  
-        - Users should **not** rely on this application for diagnosis or treatment decisions.  
-        - The authors are **not liable** for any actions taken based on this tool.
-        """)
-
-    elif selected_section == "Privacy Policy":
-        st.subheader("Privacy Policy")
-        st.markdown("""
-        We respect your privacy. This application:
-        
-        - Does **not collect, store, or share any personal data**.  
-        - Processes all user inputs **locally in memory**.  
-        - Clears session data when the session ends.  
-        - Is designed to demonstrate machine learning without compromising user privacy.
-        """)
-
-    elif selected_section == "Project Contributors":
-        st.subheader("Project Contributors")
-        st.markdown("""
-        **Team: DSA2040A Data Mining – Group 1**
-        
-        | Name       | Role & Contribution |
-        |-----------|---------------------|
-        | **Nathan**    | End-to-end data pipeline and orchestration |
-        | **Nicholas**  | Data wrangling, encoding, and enrichment |
-        | **Faith**     | Exploratory Data Analysis and Statistical Modeling |
-        | **Merhawit**  | Machine Learning modeling and classification metrics |
-        | **Mark Chweya** | Dashboard creation, Streamlit app development, documentation |
-        """)
-
-    elif selected_section == "ReadMe":
-        st.subheader("Project ReadMe")
-        st.markdown("""
-        **Project:** Mental Health Support Prediction in Tech  
-        **Dataset:** OSMI Mental Health in Tech Survey (2014, U.S.-only)  
-
-        **Machine Learning Summary:**
-        - **Target:** Likelihood of seeking treatment
-        - **Model:** Random Forest Classifier
-        - **Accuracy:** ~61%
-        - **F1 Score (treatment-seeking class):** ~66%
-
-        **Key Features Used:**
-        - Age
-        - Gender
-        - Self-employment status
-        - Family history of mental illness
-        - Company size
-        - Work interference due to mental health
-        - Employer-provided benefits
-        - Access to care options
-        - Anonymity protection
-
-        **Insights:**
-        - Workers with family history and no anonymity protection were more likely to seek treatment.
-        - Smaller companies tended to lack mental health support programs.
-        - Access to benefits and care options positively influenced treatment-seeking behavior.
-
-        **Project Structure:**
-        ```
+    elif doc_section == "Project Structure":
+        st.header("Project Structure")
+        st.code("""
         DSA2040A_DataMining_Group1/
         ├── app/
-        │   └── app.py              # Streamlit app
+        │   └── app.py
         ├── data/
-        │   └── training_model_dataset.csv
+        │   └── us_model_data/training_model_dataset.csv
         ├── models/
         │   └── mental_health_model.pkl
         ├── notebooks/
@@ -359,28 +276,46 @@ elif st.session_state.page == "documentation":
         │   └── 4_dashboard_insights.ipynb
         ├── requirements.txt
         └── README.md
-        ```
-
-        **Future Improvements:**
-        - Retrain with newer datasets (e.g., post-COVID surveys)
-        - Include SHAP feature interpretability
-        - Add demographic visualizations
         """)
 
-    elif selected_section == "GitHub Repository":
-        st.subheader("GitHub Repository")
+    elif doc_section == "Machine Learning Summary":
+        st.header("Machine Learning Summary")
         st.markdown("""
-        The complete project source code is available here:  
-        [GitHub Repo](https://github.com/markchweya/DSA2040A_DataMining_Group1)
+        - **Target Variable:** treatment (Yes/No)
+        - **Classifier:** Random Forest Classifier
+        - **Accuracy:** ~61%
+        - **F1 Score:** ~66% for treatment-seeking class
         """)
 
-    elif selected_section == "Contact & Support":
-        st.subheader("Contact & Support")
-        st.markdown("""
-        For inquiries or support, contact: **chweyamark@gmail.com**  
-        """)    
+    elif doc_section == "Key Insights":
+        st.header("Key Insights")
+        st.write("""
+        - Workers with family history and no anonymity protection were more likely to seek treatment.
+        - Smaller companies lacked mental health support programs.
+        - Gender and age group differences were observed.
+        """)
 
-    # Back to Home Button
-    if st.button("⬅ Back to Home"):
-        st.session_state.page = "welcome"
-        st.rerun()
+    elif doc_section == "Future Improvements":
+        st.header("Future Improvements")
+        st.write("""
+        - Retrain with more recent or diverse datasets
+        - Add probability explanations and SHAP feature interpretations
+        - Include demographic visualizations
+        """)
+
+    elif doc_section == "Contributors":
+        st.header("Contributors")
+        st.write("""
+        - Nathan – End-to-end data pipeline
+        - Nicholas – Data wrangling & encoding
+        - Faith – EDA & statistical modeling
+        - Merhawit – Machine learning modeling
+        - Mark – Dashboard, Streamlit app & documentation
+        """)
+
+    elif doc_section == "Contact & Support":
+        st.header("Contact & Support")
+        st.write("""
+        **Email:** chweyamark@gmail.com  
+        **GitHub Repo:** [DSA2040A_DataMining_Group1](https://github.com/markchweya/DSA2040A_DataMining_Group1)
+        """)
