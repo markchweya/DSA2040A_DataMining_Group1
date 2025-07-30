@@ -13,49 +13,33 @@ except FileNotFoundError:
     st.stop()
 
 # Function to predict treatment
-def predict_treatment(input_df):
-    prediction = model.predict(input_df)[0]
-    confidence = model.predict_proba(input_df)[0][1] if prediction == 1 else model.predict_proba(input_df)[0][0]
+def predict_treatment(input_df, threshold=0.4):
+    # Get probabilities once
+    probs = model.predict_proba(input_df)[0]
+    prediction = 1 if probs[1] >= threshold else 0
+    confidence = probs[prediction]
     return prediction, confidence
 
 # Inject custom CSS for animations and styling
 st.markdown("""
     <style>
-    .centered {
-        text-align: center;
-        padding-top: 100px;
-    }
+    .centered { text-align: center; padding-top: 100px; }
     .button-style {
-        display: inline-block;
-        padding: 0.6em 1.4em;
-        font-size: 1.1em;
-        font-weight: bold;
-        color: white;
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        text-decoration: none;
+        display: inline-block; padding: 0.6em 1.4em;
+        font-size: 1.1em; font-weight: bold; color: white;
+        background-color: #4CAF50; border: none; border-radius: 8px;
+        transition: all 0.3s ease; text-decoration: none;
     }
-    .button-style:hover {
-        background-color: #45a049;
-        transform: scale(1.05);
-    }
-    .fade-in {
-        animation: fadeIn 1.5s ease-in;
-    }
+    .button-style:hover { background-color: #45a049; transform: scale(1.05); }
+    .fade-in { animation: fadeIn 1.5s ease-in; }
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
     .result-box {
-        padding: 20px;
-        border-left: 5px solid #52c41a;
-        background-color: #f6ffed;
-        margin-top: 20px;
-        border-radius: 10px;
-        font-size: 18px;
-        color: black;
+        padding: 20px; border-left: 5px solid #52c41a;
+        background-color: #f6ffed; margin-top: 20px;
+        border-radius: 10px; font-size: 18px; color: black;
     }
     </style>
 """, unsafe_allow_html=True)
