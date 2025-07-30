@@ -3,8 +3,25 @@ import pandas as pd
 import joblib
 import time
 import os
+from io import BytesIO
+from fpdf import FPDF
+import base64
+import numpy as np
+from streamlit_lottie import st_lottie
+import json
 
-# Load the model from the correct relative path
+# --------------------
+# STREAMLIT PAGE CONFIG
+# --------------------
+st.set_page_config(
+    page_title="Mental Health Treatment Predictor",
+    page_icon="💡",
+    layout="wide"
+)
+
+# --------------------
+# LOAD MODEL
+# --------------------
 model_path = os.path.join("app", "mental_health_model.pkl")
 try:
     model = joblib.load(model_path)
@@ -12,79 +29,142 @@ except FileNotFoundError:
     st.error("Model file not found. Please ensure 'mental_health_model.pkl' is in the 'app' folder.")
     st.stop()
 
-# Function to predict treatment
+# --------------------
+# LOTTIE ANIMATIONS
+# --------------------
+def load_lottiefile(filepath: str):
+    with open(filepath, "r") as f:
+        return json.load(f)
+
+loader_animation = load_lottiefile("app/loader_1.json")       # shows while loading model page
+doctor_animation = load_lottiefile("app/loader_dancing.json") # shows before results
+
+# --------------------
+# PREDICTION FUNCTION
+# --------------------
 def predict_treatment(input_df, threshold=0.4):
-    # Get probabilities once
     probs = model.predict_proba(input_df)[0]
     prediction = 1 if probs[1] >= threshold else 0
     confidence = probs[prediction]
-    return prediction, confidence
+    ci_range = 0.05  # ±5% for visual approximation
+    return prediction, confidence, max(confidence-ci_range,0), min(confidence+ci_range,1)
 
-# Inject custom CSS for animations and styling
+# --------------------
+# PDF GENERATOR FIXED
+# --------------------
+def create_pdf(age, answers, prediction, confidence):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Mental Health Prediction Report", ln=1, align="C")
+    pdf.ln(10)
+    pdf.cell(200, 10, txt=f"Age: {age}", ln=1)
+    for q, a in answers.items():
+        pdf.cell(200, 10, txt=f"{q}: {a}", ln=1)
+    pdf.ln(10)
+    result = "Likely to Seek Treatment" if prediction == 1 else "Unlikely to Seek Treatment"
+    pdf.cell(200, 10, txt=f"Prediction: {result}", ln=1)
+    pdf.cell(200, 10, txt=f"Confidence: {confidence:.2%}", ln=1)
+
+    # ✅ FIX: output to bytes
+    pdf_bytes = pdf.output(dest="S").encode("latin-1")
+    buffer = BytesIO(pdf_bytes)
+    buffer.seek(0)
+    return buffer
+
+# --------------------
+# CUSTOM CSS
+# --------------------
 st.markdown("""
     <style>
-    .centered { text-align: center; padding-top: 100px; }
-    .button-style {
-        display: inline-block; padding: 0.6em 1.4em;
-        font-size: 1.1em; font-weight: bold; color: white;
-        background-color: #4CAF50; border: none; border-radius: 8px;
-        transition: all 0.3s ease; text-decoration: none;
-    }
-    .button-style:hover { background-color: #45a049; transform: scale(1.05); }
-    .fade-in { animation: fadeIn 1.5s ease-in; }
+    .centered { text-align: center; padding-top: 60px; }
+    .fade-in { animation: fadeIn 1.2s ease-in; }
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    .slide-in { animation: slideIn 1.2s ease-in; }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(40px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
     .result-box {
-        padding: 20px; border-left: 5px solid #52c41a;
-        background-color: #f6ffed; margin-top: 20px;
-        border-radius: 10px; font-size: 18px; color: black;
+        padding: 20px;
+        border-left: 5px solid #52c41a;
+        background-color: #f6ffed;
+        margin-top: 20px;
+        border-radius: 10px;
+        font-size: 18px;
+        color: black;
+    }
+    .dark-mode {
+        background-color: #1e1e1e;
+        color: white;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Use session state to track welcome/model toggle
+# --------------------
+# SIDEBAR SETTINGS
+# --------------------
+st.sidebar.header("Settings")
+theme = st.sidebar.radio("Choose Theme", ["Light Mode", "Dark Mode"])
+threshold = st.sidebar.slider("Prediction Threshold", 0.1, 0.9, 0.4, 0.05)
+
+if theme == "Dark Mode":
+    st.markdown('<style>body { background-color: #1e1e1e; color: white; }</style>', unsafe_allow_html=True)
+
+# --------------------
+# SESSION STATE FOR PAGE
+# --------------------
 if "page" not in st.session_state:
     st.session_state.page = "welcome"
 
+# --------------------
 # WELCOME PAGE
+# --------------------
 if st.session_state.page == "welcome":
     st.balloons()
     st.markdown('<div class="centered fade-in">', unsafe_allow_html=True)
-    st.markdown("<h1 class='fade-in'>Mental Health Treatment Predictor</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='fade-in'>This app uses a model trained on the 2014 U.S. OSMI Tech Survey to predict if you're likely to seek mental health treatment.</p>", unsafe_allow_html=True)
-    if st.button("Continue to Model", key="start"):
+    st.markdown("<h1 class='slide-in'>Welcome to the Mental Health Predictor</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='fade-in'>This is a playful experiment to see if our ML model can guess if someone might seek mental health treatment. Let's see what it thinks about you!</p>", unsafe_allow_html=True)
+    
+    if st.button("Let's Go! ▶", key="start"):
+        with st.spinner("Loading the predictor..."):
+            st_lottie(loader_animation, height=200, key="loader")
+            time.sleep(2.5)
         st.session_state.page = "model"
         st.rerun()
+    
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --------------------
 # MODEL PAGE
+# --------------------
 elif st.session_state.page == "model":
     st.title("Mental Health Treatment Predictor")
-    st.markdown("Please answer the following questions:")
+    st.markdown("Answer a few quick questions. Remember: this is for fun and educational purposes only!")
 
     with st.form("mh_form"):
         col1, col2 = st.columns(2)
         with col1:
             age = st.slider("Your Age", 18, 100, 30)
             self_employed = st.selectbox("Are you self-employed?", ["Yes", "No"])
-            family_history = st.selectbox("Family history of mental illness?", ["Yes", "No"])
+            family_history = st.selectbox("Do you have a family history of mental illness?", ["Yes", "No"])
         with col2:
-            remote_work = st.selectbox("Do you work remotely?", ["Yes", "No"])
+            remote_work = st.selectbox("Do you usually work remotely?", ["Yes", "No"])
             tech_company = st.selectbox("Do you work in a tech company?", ["Yes", "No"])
 
-        disclaimer = st.checkbox("I understand this is not medical advice and is for educational purposes only.")
-        submitted = st.form_submit_button("Predict")
+        disclaimer = st.checkbox("I understand this is just a fun experiment and not medical advice.")
+        submitted = st.form_submit_button("Make My Prediction!")
 
     if submitted:
         if not disclaimer:
-            st.warning("Please check the disclaimer box to proceed.")
+            st.warning("Oops! Please check the disclaimer box before we proceed.")
         else:
-            with st.spinner("Analyzing your responses..."):
+            with st.spinner("Thinking really hard about your answers..."):
                 time.sleep(1.5)
 
-                # Encode inputs
                 input_data = pd.DataFrame([{
                     "Age": age,
                     "self_employed": 1 if self_employed == "Yes" else 0,
@@ -93,21 +173,60 @@ elif st.session_state.page == "model":
                     "tech_company": 1 if tech_company == "Yes" else 0
                 }])
 
-                prediction, confidence = predict_treatment(input_data)
+                prediction, confidence, ci_low, ci_high = predict_treatment(input_data, threshold=threshold)
 
+            # 🎥 Show 3D dancing doctor before results
+            st_lottie(doctor_animation, height=250, key="doctor_dancing")
+            time.sleep(1.5)
+
+            # --------------------
+            # DISPLAY RESULT
+            # --------------------
             st.markdown("---")
-            if prediction == 1:
-                st.markdown(f"""
-                <div class="result-box fade-in">
-                    You are likely to seek mental health treatment.<br>
-                    <small>Confidence: {confidence:.2%}</small>
-                </div>
-                """, unsafe_allow_html=True)
-                st.balloons()
-            else:
-                st.markdown(f"""
-                <div class="result-box fade-in" style="background-color: #fffbe6; border-left-color: #faad14;">
-                    You are unlikely to seek mental health treatment.<br>
-                    <small>Confidence: {confidence:.2%}</small>
-                </div>
-                """, unsafe_allow_html=True)
+            result_text = "You seem likely to seek mental health support." if prediction == 1 else "You seem unlikely to seek mental health support."
+            color = "#f6ffed" if prediction == 1 else "#fffbe6"
+            border_color = "#52c41a" if prediction == 1 else "#faad14"
+
+            st.markdown(f"""
+            <div class="result-box fade-in" style="background-color:{color}; border-left-color:{border_color};">
+                <b>Prediction:</b> {result_text}<br>
+                <b>Confidence:</b> {confidence:.2%} <br>
+                <b>Approx. 95% CI:</b> {ci_low:.2%} - {ci_high:.2%}
+            </div>
+            """, unsafe_allow_html=True)
+
+            st.progress(confidence)
+            st.write(f"Our model is {confidence:.2%} confident in this prediction.")
+
+            st.balloons()
+
+            # --------------------
+            # DOWNLOAD PDF
+            # --------------------
+            report = create_pdf(
+                age,
+                {
+                    "Self-employed": self_employed,
+                    "Family History": family_history,
+                    "Remote Work": remote_work,
+                    "Tech Company": tech_company
+                },
+                prediction,
+                confidence
+            )
+            b64 = base64.b64encode(report.read()).decode()
+            href = f'<a href="data:application/pdf;base64,{b64}" download="mental_health_report.pdf">Download Your Fun Report (PDF)</a>'
+            st.markdown(href, unsafe_allow_html=True)
+
+            # --------------------
+            # SIMPLE EXPLANATION
+            # --------------------
+            st.markdown("### Why might the model think this?")
+            st.markdown("This is a **toy model**, but here are some playful insights:")
+            if family_history == "Yes":
+                st.markdown("- Having a family history of mental illness is often linked to being more open to seeking treatment.")
+            if self_employed == "Yes":
+                st.markdown("- Being self-employed can change stress levels and flexibility, which might influence treatment decisions.")
+            if remote_work == "Yes":
+                st.markdown("- Working remotely sometimes correlates with different mental health patterns.")
+            st.markdown("Remember, this is **just for fun and education**, not a medical opinion.")
