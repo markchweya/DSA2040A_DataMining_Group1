@@ -111,4 +111,19 @@ elif st.session_state.page == "model":
 
                 prediction, confidence = predict_treatment(input_data)
 
-           
+            st.markdown("---")
+            if prediction == 1:
+                st.markdown(f"""
+                <div class="result-box fade-in">
+                    You are likely to seek mental health treatment.<br>
+                    <small>Confidence: {confidence:.2%}</small>
+                </div>
+                """, unsafe_allow_html=True)
+                st.balloons()
+            else:
+                st.markdown(f"""
+                <div class="result-box fade-in" style="background-color: #fffbe6; border-left-color: #faad14;">
+                    You are unlikely to seek mental health treatment.<br>
+                    <small>Confidence: {confidence:.2%}</small>
+                </div>
+                """, unsafe_allow_html=True)
