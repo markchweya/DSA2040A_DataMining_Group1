@@ -7,8 +7,6 @@ from io import BytesIO
 from fpdf import FPDF
 import base64
 import numpy as np
-from streamlit_lottie import st_lottie
-import json
 
 # --------------------
 # STREAMLIT PAGE CONFIG
@@ -30,27 +28,17 @@ except FileNotFoundError:
     st.stop()
 
 # --------------------
-# LOTTIE ANIMATIONS
-# --------------------
-def load_lottiefile(filepath: str):
-    with open(filepath, "r") as f:
-        return json.load(f)
-
-loader_animation = load_lottiefile("app/loader_1.json")
-doctor_animation = load_lottiefile("app/loader_dancing.json")
-
-# --------------------
 # PREDICTION FUNCTION
 # --------------------
 def predict_treatment(input_df, threshold=0.4):
     probs = model.predict_proba(input_df)[0]
     prediction = 1 if probs[1] >= threshold else 0
     confidence = probs[prediction]
-    ci_range = 0.05  # ±5% for visualization
+    ci_range = 0.05  # ±5% for fun visualization
     return prediction, confidence, max(confidence-ci_range,0), min(confidence+ci_range,1)
 
 # --------------------
-# PDF GENERATOR
+# FIXED PDF GENERATOR
 # --------------------
 def create_pdf(age, answers, prediction, confidence):
     pdf = FPDF()
@@ -66,8 +54,10 @@ def create_pdf(age, answers, prediction, confidence):
     pdf.cell(200, 10, txt=f"Prediction: {result}", ln=1)
     pdf.cell(200, 10, txt=f"Confidence: {confidence:.2%}", ln=1)
 
-    pdf_bytes = pdf.output(dest='S').encode('latin1')
-    return BytesIO(pdf_bytes)
+    # ✅ Return as BytesIO
+    pdf_bytes = pdf.output(dest='S').encode('latin-1')
+    buffer = BytesIO(pdf_bytes)
+    return buffer
 
 # --------------------
 # CUSTOM CSS
@@ -75,15 +65,15 @@ def create_pdf(age, answers, prediction, confidence):
 st.markdown("""
     <style>
     .centered { text-align: center; padding-top: 60px; }
-    .fade-in { animation: fadeIn 1.5s ease-in; }
-    .fade-out { animation: fadeOut 1.5s ease-out; }
+    .fade-in { animation: fadeIn 1.2s ease-in; }
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-20px); }
+    .slide-in { animation: slideIn 1.2s ease-in; }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(40px); }
+        to { opacity: 1; transform: translateX(0); }
     }
     .result-box {
         padding: 20px;
@@ -94,11 +84,22 @@ st.markdown("""
         font-size: 18px;
         color: black;
     }
-    .loader-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60vh;
+    .dark-mode {
+        background-color: #1e1e1e;
+        color: white;
+    }
+    .cool-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 8px;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .cool-button:hover {
+        background-color: #45a049;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -107,57 +108,41 @@ st.markdown("""
 # SIDEBAR SETTINGS
 # --------------------
 st.sidebar.header("Settings")
-theme = st.sidebar.radio("Choose Theme", ["Light Mode", "Dark Mode"], key="theme_selector")
+theme = st.sidebar.radio("Choose Theme", ["Light Mode", "Dark Mode"], key="theme_radio")
 threshold = st.sidebar.slider("Prediction Threshold", 0.1, 0.9, 0.4, 0.05, key="threshold_slider")
 
 if theme == "Dark Mode":
-    st.markdown("<style>body { background-color: #1e1e1e; color: white; }</style>", unsafe_allow_html=True)
+    st.markdown('<style>body { background-color: #1e1e1e; color: white; }</style>', unsafe_allow_html=True)
 
 # --------------------
 # SESSION STATE
 # --------------------
 if "page" not in st.session_state:
     st.session_state.page = "welcome"
-if "prediction_data" not in st.session_state:
-    st.session_state.prediction_data = None
 
 # --------------------
 # WELCOME PAGE
 # --------------------
 if st.session_state.page == "welcome":
     st.markdown('<div class="centered fade-in">', unsafe_allow_html=True)
-    st.markdown("<h1 class='fade-in'>Welcome to the Mental Health Predictor</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='fade-in'>This app is a playful experiment to see if our ML model can guess if someone might seek mental health treatment.</p>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size:14px;color:gray;'>By continuing, you acknowledge that this app is for educational purposes only and no personal data is stored.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 class='slide-in'>Welcome to the Mental Health Predictor</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='fade-in'>This is a playful experiment to see if our ML model can guess if someone might seek mental health treatment.</p>", unsafe_allow_html=True)
+    st.markdown("<p><b>By continuing, you acknowledge that this app is for educational and fun purposes only. No personal data is stored.</b></p>", unsafe_allow_html=True)
 
-    agree = st.checkbox("I agree to the privacy terms", key="privacy_agree")
-    
-    # Add a new session state to track loading
-    if "loading" not in st.session_state:
-        st.session_state.loading = False
-
-    if not st.session_state.loading:
-        st.button("Let's Go! ▶", disabled=not agree, key="start_btn", on_click=lambda: setattr(st.session_state, "loading", True))
-    else:
-        # Show loader in the center
-        st.markdown('<div class="loader-container">', unsafe_allow_html=True)
-        st_lottie(loader_animation, height=200, key="loader_centered")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # After showing loader for 2.5s, go to model page
-        time.sleep(2.5)
+    privacy_accepted = st.checkbox("I agree to the Privacy Terms")
+    if st.button("Let's Go! ▶", key="start", disabled=not privacy_accepted):
+        st.balloons()  # ✅ Only here
+        time.sleep(1.5)
         st.session_state.page = "model"
-        st.session_state.loading = False
         st.rerun()
-
     st.markdown('</div>', unsafe_allow_html=True)
+
 # --------------------
 # MODEL PAGE
 # --------------------
 elif st.session_state.page == "model":
-    st.markdown('<div class="fade-in">', unsafe_allow_html=True)
     st.title("Mental Health Treatment Predictor")
-    st.markdown("Answer a few quick questions below:")
+    st.markdown("Answer a few quick questions. This is just for fun!")
 
     with st.form("mh_form"):
         col1, col2 = st.columns(2)
@@ -173,74 +158,85 @@ elif st.session_state.page == "model":
         submitted = st.form_submit_button("Make My Prediction!")
 
     if submitted and disclaimer:
-        # Save data to session and go to results page
-        input_data = pd.DataFrame([{
-            "Age": age,
-            "self_employed": 1 if self_employed == "Yes" else 0,
-            "family_history": 1 if family_history == "Yes" else 0,
-            "remote_work": 1 if remote_work == "Yes" else 0,
-            "tech_company": 1 if tech_company == "Yes" else 0
-        }])
-        prediction, confidence, ci_low, ci_high = predict_treatment(input_data, threshold=threshold)
+        with st.spinner("Thinking really hard about your answers..."):
+            time.sleep(1.5)
 
-        # Save for results page
-        st.session_state.prediction_data = {
+            input_data = pd.DataFrame([{
+                "Age": age,
+                "self_employed": 1 if self_employed == "Yes" else 0,
+                "family_history": 1 if family_history == "Yes" else 0,
+                "remote_work": 1 if remote_work == "Yes" else 0,
+                "tech_company": 1 if tech_company == "Yes" else 0
+            }])
+
+            prediction, confidence, ci_low, ci_high = predict_treatment(input_data, threshold=threshold)
+
+        # ✅ Move to results page
+        st.session_state.result = {
+            "prediction": prediction,
+            "confidence": confidence,
+            "ci_low": ci_low,
+            "ci_high": ci_high,
             "age": age,
             "answers": {
                 "Self-employed": self_employed,
                 "Family History": family_history,
                 "Remote Work": remote_work,
                 "Tech Company": tech_company
-            },
-            "prediction": prediction,
-            "confidence": confidence,
-            "ci_low": ci_low,
-            "ci_high": ci_high
+            }
         }
-
-        # Show doctor animation (centered)
-        st.markdown('<div class="loader-container">', unsafe_allow_html=True)
-        st_lottie(doctor_animation, height=250, key="doctor_anim")
-        st.markdown('</div>', unsafe_allow_html=True)
-        time.sleep(2)
-
         st.session_state.page = "results"
         st.rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------
 # RESULTS PAGE
 # --------------------
 elif st.session_state.page == "results":
-    data = st.session_state.prediction_data
-    st.markdown('<div class="fade-in">', unsafe_allow_html=True)
-    st.title("Your Prediction Results")
+    result = st.session_state.result
+    prediction = result["prediction"]
+    confidence = result["confidence"]
+    ci_low = result["ci_low"]
+    ci_high = result["ci_high"]
+    age = result["age"]
+    answers = result["answers"]
 
-    result_text = "You seem likely to seek mental health support." if data["prediction"] == 1 else "You seem unlikely to seek mental health support."
-    color = "#f6ffed" if data["prediction"] == 1 else "#fffbe6"
-    border_color = "#52c41a" if data["prediction"] == 1 else "#faad14"
+    # ❄️ Snow animation
+    st.snow()
+
+    st.title("Your Prediction Result ")
+
+    result_text = "You seem likely to seek mental health support." if prediction == 1 else "You seem unlikely to seek mental health support."
+    color = "#f6ffed" if prediction == 1 else "#fffbe6"
+    border_color = "#52c41a" if prediction == 1 else "#faad14"
 
     st.markdown(f"""
     <div class="result-box fade-in" style="background-color:{color}; border-left-color:{border_color};">
         <b>Prediction:</b> {result_text}<br>
-        <b>Confidence:</b> {data['confidence']:.2%} <br>
-        <b>Approx. 95% CI:</b> {data['ci_low']:.2%} - {data['ci_high']:.2%}
+        <b>Confidence:</b> {confidence:.2%} <br>
+        <b>Approx. 95% CI:</b> {ci_low:.2%} - {ci_high:.2%}
     </div>
     """, unsafe_allow_html=True)
 
-    st.progress(data['confidence'])
-    st.write(f"Our model is {data['confidence']:.2%} confident in this prediction.")
+    st.progress(confidence)
+    st.write(f"Our model is {confidence:.2%} confident in this prediction.")
 
-    st.balloons()  # Balloons only on the final results page
-
-    # Download PDF
-    report = create_pdf(data['age'], data['answers'], data['prediction'], data['confidence'])
+    # --------------------
+    # DOWNLOAD PDF
+    # --------------------
+    report = create_pdf(age, answers, prediction, confidence)
     b64 = base64.b64encode(report.read()).decode()
-    href = f'<a href="data:application/pdf;base64,{b64}" download="mental_health_report.pdf">Download Your Fun Report (PDF)</a>'
+    href = f'<a href="data:application/pdf;base64,{b64}" download="mental_health_report.pdf">📄 Download Your Report (PDF)</a>'
     st.markdown(href, unsafe_allow_html=True)
 
-    # Back button
-    if st.button("🔄 Start Over"):
-        st.session_state.page = "welcome"
-        st.rerun()
+    # --------------------
+    # SIMPLE EXPLANATION
+    # --------------------
+    st.markdown("### Why might the model think this?")
+    st.markdown("This is a **toy model**, but here are some playful insights:")
+    if answers["Family History"] == "Yes":
+        st.markdown("- Having a family history of mental illness is often linked to being more open to seeking treatment.")
+    if answers["Self-employed"] == "Yes":
+        st.markdown("- Being self-employed can change stress levels and flexibility, which might influence treatment decisions.")
+    if answers["Remote Work"] == "Yes":
+        st.markdown("- Working remotely sometimes correlates with different mental health patterns.")
+    st.markdown("Remember, this is **just for fun and education**, not a medical opinion.")
