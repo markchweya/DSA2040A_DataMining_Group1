@@ -54,7 +54,6 @@ def create_pdf(age, answers, prediction, confidence):
     pdf.cell(200, 10, txt=f"Prediction: {result}", ln=1)
     pdf.cell(200, 10, txt=f"Confidence: {confidence:.2%}", ln=1)
 
-    # ✅ Return as BytesIO
     pdf_bytes = pdf.output(dest='S').encode('latin-1')
     buffer = BytesIO(pdf_bytes)
     return buffer
@@ -84,10 +83,6 @@ st.markdown("""
         font-size: 18px;
         color: black;
     }
-    .dark-mode {
-        background-color: #1e1e1e;
-        color: white;
-    }
     .cool-button {
         background-color: #4CAF50;
         color: white;
@@ -105,14 +100,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --------------------
-# SIDEBAR SETTINGS
+# SIDEBAR MENU
 # --------------------
-st.sidebar.header("Settings")
-theme = st.sidebar.radio("Choose Theme", ["Light Mode", "Dark Mode"], key="theme_radio")
-threshold = st.sidebar.slider("Prediction Threshold", 0.1, 0.9, 0.4, 0.05, key="threshold_slider")
-
-if theme == "Dark Mode":
-    st.markdown('<style>body { background-color: #1e1e1e; color: white; }</style>', unsafe_allow_html=True)
+st.sidebar.header("Menu")
+menu = st.sidebar.radio("Navigate", ["🏠 Home", "📜 Privacy Policy"], key="menu_radio")
 
 # --------------------
 # SESSION STATE
@@ -124,18 +115,27 @@ if "page" not in st.session_state:
 # WELCOME PAGE
 # --------------------
 if st.session_state.page == "welcome":
-    st.markdown('<div class="centered fade-in">', unsafe_allow_html=True)
-    st.markdown("<h1 class='slide-in'>Welcome to the Mental Health Predictor</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='fade-in'>This is a playful experiment to see if our ML model can guess if someone might seek mental health treatment.</p>", unsafe_allow_html=True)
-    st.markdown("<p><b>By continuing, you acknowledge that this app is for educational and fun purposes only. No personal data is stored.</b></p>", unsafe_allow_html=True)
+    if menu == "📜 Privacy Policy":
+        st.markdown("## 📜 Privacy Policy")
+        st.write("""
+        This app is for **educational and fun purposes only**.  
+        - No personal data is stored.  
+        - Predictions are not medical advice.  
+        By using this app, you acknowledge these terms.
+        """)
+    else:
+        st.markdown('<div class="centered fade-in">', unsafe_allow_html=True)
+        st.markdown("<h1 class='slide-in'>Welcome to the Mental Health Predictor</h1>", unsafe_allow_html=True)
+        st.markdown("<p class='fade-in'>This is a playful experiment to see if our ML model can guess if someone might seek mental health treatment.</p>", unsafe_allow_html=True)
+        st.markdown("<p><b>By continuing, you acknowledge that this app is for educational and fun purposes only. No personal data is stored.</b></p>", unsafe_allow_html=True)
 
-    privacy_accepted = st.checkbox("I agree to the Privacy Terms")
-    if st.button("Let's Go! ▶", key="start", disabled=not privacy_accepted):
-        st.balloons()  # Only here
-        time.sleep(1.5)
-        st.session_state.page = "model"
-        st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+        privacy_accepted = st.checkbox("I agree to the Privacy Terms")
+        if st.button("Let's Go! ▶", key="start", disabled=not privacy_accepted):
+            st.balloons()
+            time.sleep(1.5)
+            st.session_state.page = "model"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------
 # MODEL PAGE
@@ -169,9 +169,8 @@ elif st.session_state.page == "model":
                 "tech_company": 1 if tech_company == "Yes" else 0
             }])
 
-            prediction, confidence, ci_low, ci_high = predict_treatment(input_data, threshold=threshold)
+            prediction, confidence, ci_low, ci_high = predict_treatment(input_data, threshold=0.4)
 
-        # ✅ Move to results page
         st.session_state.result = {
             "prediction": prediction,
             "confidence": confidence,
@@ -200,9 +199,7 @@ elif st.session_state.page == "results":
     age = result["age"]
     answers = result["answers"]
 
-    # ❄️ Snow animation
     st.snow()
-
     st.title("Your Prediction Result")
 
     result_text = "You seem likely to seek mental health support." if prediction == 1 else "You seem unlikely to seek mental health support."
@@ -220,19 +217,12 @@ elif st.session_state.page == "results":
     st.progress(confidence)
     st.write(f"Our model is {confidence:.2%} confident in this prediction.")
 
-    # --------------------
-    # DOWNLOAD PDF
-    # --------------------
     report = create_pdf(age, answers, prediction, confidence)
     b64 = base64.b64encode(report.read()).decode()
     href = f'<a href="data:application/pdf;base64,{b64}" download="mental_health_report.pdf">📄 Download Your Report (PDF)</a>'
     st.markdown(href, unsafe_allow_html=True)
 
-    # --------------------
-    # SIMPLE EXPLANATION
-    # --------------------
     st.markdown("### Why might the model think this?")
-    st.markdown("Here are some insights:")
     if answers["Family History"] == "Yes":
         st.markdown("- Having a family history of mental illness is often linked to being more open to seeking treatment.")
     if answers["Self-employed"] == "Yes":
@@ -241,9 +231,6 @@ elif st.session_state.page == "results":
         st.markdown("- Working remotely sometimes correlates with different mental health patterns.")
     st.markdown("Remember, this is **just for fun and education**, not a medical opinion.")
 
-    # --------------------
-    # BACK BUTTON
-    # --------------------
     if st.button("⬅ Back to Predictor"):
         st.session_state.page = "model"
         st.rerun()
