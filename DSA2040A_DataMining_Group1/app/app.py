@@ -101,6 +101,10 @@ if st.sidebar.button("Privacy Policy"):
     st.session_state.page = "privacy"
     st.rerun()
 
+if st.sidebar.button("Documentation"):
+    st.session_state.page = "documentation"
+    st.rerun()
+
 # -------------------- HOME PAGE --------------------
 if st.session_state.page == "welcome":
     st.markdown('<div class="centered fade-in">', unsafe_allow_html=True)
@@ -217,4 +221,95 @@ elif st.session_state.page == "results":
 
     if st.button("Back to Predictor"):
         st.session_state.page = "model"
+        st.rerun()
+
+
+# -------------------- DOCUMENTATION PAGE --------------------
+elif st.session_state.page == "documentation":
+    st.title("Documentation")
+
+    # Small menu for documentation
+    doc_sections = [
+        "Overview",
+        "How It Works",
+        "Terms of Use",
+        "Privacy Policy",
+        "Project Contributors",
+        "ReadMe",
+        "GitHub Repository",
+        "Contact & Support"
+    ]
+
+    selected_section = st.radio("Select Section", doc_sections, horizontal=True, key="doc_menu")
+
+    if selected_section == "Overview":
+        st.subheader("Overview")
+        st.write("""
+        This app predicts whether a user is likely to seek mental health treatment
+        based on a few survey questions. It is powered by a machine learning model
+        trained on mental health survey data.
+        """)
+
+    elif selected_section == "How It Works":
+        st.subheader("How It Works")
+        st.markdown("""
+        1. User answers a few demographic and work-related questions.
+        2. Responses are encoded and fed into a trained ML model.
+        3. The model predicts the likelihood of seeking mental health treatment.
+        4. Results are displayed with a confidence score and downloadable PDF.
+        """)
+
+    elif selected_section == "Terms of Use":
+        st.subheader("Terms of Use")
+        st.markdown("""
+        - This app is for educational and demonstration purposes only.
+        - It should **not** be used for medical or diagnostic decisions.
+        - By using this app, you acknowledge that results are **not professional advice**.
+        """)
+
+    elif selected_section == "Privacy Policy":
+        st.subheader("Privacy Policy")
+        st.markdown("""
+        - No personal data is stored or shared.
+        - All processing occurs in memory and is cleared upon session end.
+        - Users can freely use the predictor without risk to their privacy.
+        """)
+
+    elif selected_section == "Project Contributors":
+        st.subheader("Project Contributors")
+        st.markdown("""
+        **DSA2040A Data Mining Group 1**  
+        - Mark Chweya  
+        - [Add all team members here]
+        """)
+
+    elif selected_section == "ReadMe":
+        st.subheader("Project ReadMe")
+        st.markdown("""
+        This project was developed as part of the DSA2040A Data Mining course.
+        It demonstrates the use of Machine Learning for mental health prediction.
+        
+        Features:
+        - Interactive Streamlit web app
+        - Machine learning model integration
+        - PDF report download
+        - Educational and privacy-friendly
+        """)
+
+    elif selected_section == "GitHub Repository":
+        st.subheader("GitHub Repository")
+        st.markdown("""
+        The complete source code for this project is available here:  
+        [Visit GitHub Repo](https://github.com/markchweya/DSA2040A_DataMining_Group1)
+        """)
+
+    elif selected_section == "Contact & Support":
+        st.subheader("Contact & Support")
+        st.markdown("""
+        For inquiries or support, contact: **markchweya@example.com**  
+        """)    
+
+    # Back to Home Button
+    if st.button("⬅ Back to Home"):
+        st.session_state.page = "welcome"
         st.rerun()
