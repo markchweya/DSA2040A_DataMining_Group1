@@ -14,12 +14,16 @@ st.set_page_config(
     layout="wide"
 )
 
-# -------------------- LOAD MODEL --------------------
-model_path = os.path.join("app", "mental_health_model.pkl")
+# -------------------- MODEL LOADING --------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "mental_health_model.pkl")
+
+st.write(f"🔍 Debug: Looking for model at `{model_path}`")  # Debug line
+
 try:
     model = joblib.load(model_path)
 except FileNotFoundError:
-    st.error("Model file not found. Please ensure 'mental_health_model.pkl' is in the 'app' folder.")
+    st.error(f"❌ Model file not found. Expected at: `{model_path}`")
     st.stop()
 
 # -------------------- PREDICTION FUNCTION --------------------
@@ -222,6 +226,7 @@ elif st.session_state.page == "results":
     if st.button("Back to Predictor"):
         st.session_state.page = "model"
         st.rerun()
+
 
 
 # -------------------- DOCUMENTATION PAGE --------------------
