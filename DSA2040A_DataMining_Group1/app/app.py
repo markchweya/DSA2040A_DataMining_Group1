@@ -51,8 +51,9 @@ def create_pdf(age, answers, prediction, confidence):
     pdf.cell(200, 10, txt=f"Prediction: {result}", ln=1)
     pdf.cell(200, 10, txt=f"Confidence: {confidence:.2%}", ln=1)
 
-    pdf_bytes = pdf.output(dest='S').encode('latin-1')
+    pdf_bytes = pdf.output(dest='S')  # Already bytes in fpdf2
     return BytesIO(pdf_bytes)
+
 
 # -------------------- CSS --------------------
 st.markdown("""
