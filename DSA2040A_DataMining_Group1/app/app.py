@@ -226,90 +226,96 @@ elif st.session_state.page == "results":
 
 # -------------------- DOCUMENTATION PAGE --------------------
 elif st.session_state.page == "documentation":
-    st.title("Documentation")
+    st.title("Project Documentation")
 
-    # Small menu for documentation
-    doc_sections = [
-        "Overview",
-        "How It Works",
-        "Terms of Use",
-        "Privacy Policy",
-        "Project Contributors",
-        "ReadMe",
-        "GitHub Repository",
-        "Contact & Support"
-    ]
+    # --- Collapsible Menu ---
+    with st.expander("📄 Show Documentation Menu", expanded=True):
+        menu_items = [
+            "Overview",
+            "Getting Started",
+            "Project Structure",
+            "Machine Learning Summary",
+            "Key Insights",
+            "Future Improvements",
+            "Contributors",
+            "Contact & Support"
+        ]
+        doc_section = st.radio("Select a section to view:", menu_items, key="doc_menu")
 
-    selected_section = st.radio("Select Section", doc_sections, horizontal=True, key="doc_menu")
-
-    if selected_section == "Overview":
-        st.subheader("Overview")
+    # --- Content Rendering ---
+    if doc_section == "Overview":
+        st.header("Overview")
         st.write("""
-        This app predicts whether a user is likely to seek mental health treatment
-        based on a few survey questions. It is powered by a machine learning model
-        trained on mental health survey data.
+        This project predicts the likelihood of employees seeking mental health support
+        using survey data from the 2014 OSMI Mental Health in Tech dataset...
         """)
 
-    elif selected_section == "How It Works":
-        st.subheader("How It Works")
+    elif doc_section == "Getting Started":
+        st.header("Getting Started")
         st.markdown("""
-        1. User answers a few demographic and work-related questions.
-        2. Responses are encoded and fed into a trained ML model.
-        3. The model predicts the likelihood of seeking mental health treatment.
-        4. Results are displayed with a confidence score and downloadable PDF.
+        **Run Locally:**
+        1. Clone the repo: `git clone https://github.com/markchweya/DSA2040A_DataMining_Group1.git`
+        2. Install dependencies: `pip install -r requirements.txt`
+        3. Launch app: `streamlit run app/app.py`
         """)
 
-    elif selected_section == "Terms of Use":
-        st.subheader("Terms of Use")
-        st.markdown("""
-        - This app is for educational and demonstration purposes only.
-        - It should **not** be used for medical or diagnostic decisions.
-        - By using this app, you acknowledge that results are **not professional advice**.
+    elif doc_section == "Project Structure":
+        st.header("Project Structure")
+        st.code("""
+        DSA2040A_DataMining_Group1/
+        ├── app/
+        │   └── app.py
+        ├── data/
+        │   └── us_model_data/training_model_dataset.csv
+        ├── models/
+        │   └── mental_health_model.pkl
+        ├── notebooks/
+        │   ├── 1_cleaning_and_filtering.ipynb
+        │   ├── 2_exploratory_analysis_us.py
+        │   ├── 3_classification_model.ipynb
+        │   └── 4_dashboard_insights.ipynb
+        ├── requirements.txt
+        └── README.md
         """)
 
-    elif selected_section == "Privacy Policy":
-        st.subheader("Privacy Policy")
+    elif doc_section == "Machine Learning Summary":
+        st.header("Machine Learning Summary")
         st.markdown("""
-        - No personal data is stored or shared.
-        - All processing occurs in memory and is cleared upon session end.
-        - Users can freely use the predictor without risk to their privacy.
+        - **Target Variable:** treatment (Yes/No)
+        - **Classifier:** Random Forest Classifier
+        - **Accuracy:** ~61%
+        - **F1 Score:** ~66% for treatment-seeking class
         """)
 
-    elif selected_section == "Project Contributors":
-        st.subheader("Project Contributors")
-        st.markdown("""
-        **DSA2040A Data Mining Group 1**  
-        - Mark Chweya  
-        - [Add all team members here]
+    elif doc_section == "Key Insights":
+        st.header("Key Insights")
+        st.write("""
+        - Workers with family history and no anonymity protection were more likely to seek treatment.
+        - Smaller companies lacked mental health support programs.
+        - Gender and age group differences were observed.
         """)
 
-    elif selected_section == "ReadMe":
-        st.subheader("Project ReadMe")
-        st.markdown("""
-        This project was developed as part of the DSA2040A Data Mining course.
-        It demonstrates the use of Machine Learning for mental health prediction.
-        
-        Features:
-        - Interactive Streamlit web app
-        - Machine learning model integration
-        - PDF report download
-        - Educational and privacy-friendly
+    elif doc_section == "Future Improvements":
+        st.header("Future Improvements")
+        st.write("""
+        - Retrain with more recent or diverse datasets
+        - Add probability explanations and SHAP feature interpretations
+        - Include demographic visualizations
         """)
 
-    elif selected_section == "GitHub Repository":
-        st.subheader("GitHub Repository")
-        st.markdown("""
-        The complete source code for this project is available here:  
-        [Visit GitHub Repo](https://github.com/markchweya/DSA2040A_DataMining_Group1)
+    elif doc_section == "Contributors":
+        st.header("Contributors")
+        st.write("""
+        - Nathan – End-to-end data pipeline
+        - Nicholas – Data wrangling & encoding
+        - Faith – EDA & statistical modeling
+        - Merhawit – Machine learning modeling
+        - Mark – Dashboard, Streamlit app & documentation
         """)
 
-    elif selected_section == "Contact & Support":
-        st.subheader("Contact & Support")
-        st.markdown("""
-        For inquiries or support, contact: **markchweya@example.com**  
-        """)    
-
-    # Back to Home Button
-    if st.button("⬅ Back to Home"):
-        st.session_state.page = "welcome"
-        st.rerun()
+    elif doc_section == "Contact & Support":
+        st.header("Contact & Support")
+        st.write("""
+        **Email:** chweyamark@gmail.com  
+        **GitHub Repo:** [DSA2040A_DataMining_Group1](https://github.com/markchweya/DSA2040A_DataMining_Group1)
+        """)
