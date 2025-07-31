@@ -18,12 +18,14 @@ st.set_page_config(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "mental_health_model.pkl")
 
-st.write(f"🔍 Debug: Looking for model at `{model_path}`")  # Debug line
+import logging
+logging.info(f"Debug: Looking for model at `{model_path}`")
+
 
 try:
     model = joblib.load(model_path)
 except FileNotFoundError:
-    st.error(f"❌ Model file not found. Expected at: `{model_path}`")
+    st.error(f"Model file not found. Expected at: `{model_path}`")
     st.stop()
 
 # -------------------- PREDICTION FUNCTION --------------------
