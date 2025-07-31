@@ -115,14 +115,14 @@ if st.sidebar.button("Documentation"):
     st.rerun()
 
 # -------------------- ADJUSTABLE ANALYSIS FEATURE --------------------
-st.sidebar.markdown("#### Prediction Threshold")
-st.session_state.threshold = st.sidebar.slider(
-    "Adjust model sensitivity", 
-    min_value=0.0, 
-    max_value=1.0, 
-    value=0.4, 
-    step=0.01
-)
+#st.sidebar.markdown("#### Prediction Threshold")
+#st.session_state.threshold = st.sidebar.slider(
+ #   "Adjust model sensitivity", 
+  #  min_value=0.0, 
+   # max_value=1.0, 
+   # value=0.4, 
+   # step=0.01
+#)
 
 
 # -------------------- HOME PAGE --------------------
