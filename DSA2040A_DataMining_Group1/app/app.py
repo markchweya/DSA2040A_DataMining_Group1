@@ -100,6 +100,8 @@ if "page" not in st.session_state:
 
 # -------------------- SIDEBAR MENU --------------------
 st.sidebar.markdown("### Navigation")
+
+# Navigation Buttons
 if st.sidebar.button("Home"):
     st.session_state.page = "welcome"
     st.rerun()
@@ -111,6 +113,17 @@ if st.sidebar.button("Privacy Policy"):
 if st.sidebar.button("Documentation"):
     st.session_state.page = "documentation"
     st.rerun()
+
+# -------------------- ADJUSTABLE ANALYSIS FEATURE --------------------
+st.sidebar.markdown("#### Prediction Threshold")
+st.session_state.threshold = st.sidebar.slider(
+    "Adjust model sensitivity", 
+    min_value=0.0, 
+    max_value=1.0, 
+    value=0.4, 
+    step=0.01
+)
+
 
 # -------------------- HOME PAGE --------------------
 if st.session_state.page == "welcome":
