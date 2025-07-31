@@ -10,7 +10,7 @@ import base64
 # -------------------- PAGE CONFIG --------------------
 st.set_page_config(
     page_title="Mental Health Treatment Predictor",
-    page_icon="",
+    page_icon="🌿",
     layout="wide"
 )
 
