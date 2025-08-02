@@ -230,6 +230,7 @@ elif st.session_state.page == "results":
     href = f'<a href="data:application/pdf;base64,{b64}" download="mental_health_report.pdf">Download Your Report (PDF)</a>'
     st.markdown(href, unsafe_allow_html=True)
 
+# Model explaination for answers
     st.markdown("### Why might the model think this?")
     if answers["Family History"] == "Yes":
         st.markdown("- Family history often correlates with seeking treatment.")
