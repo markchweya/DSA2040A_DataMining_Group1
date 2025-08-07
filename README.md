@@ -78,7 +78,7 @@ Access to care options
 
 Protection of anonymity
 
-🧠 Insights From the Data
+Insights From the Data
 Workers with family history and no anonymity protection were more likely to seek treatment.
 
 Smaller companies tended to lack mental health support programs.
@@ -87,7 +87,7 @@ There were gender and age group differences in treatment-seeking patterns.
 
 Access to benefits and care options positively influenced mental health treatment.
 
-🚀 How to Run Locally
+How to Run Locally
 1. Clone the Repo
 bash
 Copy
@@ -106,14 +106,14 @@ Edit
 streamlit run app/app.py
 Ensure the mental_health_model.pkl and the preprocessed dataset are in their expected folders.
 
-📌 Notes
+Notes
 The app supports only U.S. respondents as per the model training scope.
 
 This is not a diagnostic tool, but a demonstration of data mining techniques on real-world survey data.
 
 Model bias may exist due to limited demographics (2014 data, tech sector only).
 
-📎 Future Improvements
+Future Improvements
 Retrain with more recent or diverse datasets (e.g., post-COVID surveys).
 
 Add confidence intervals or probability estimates.
