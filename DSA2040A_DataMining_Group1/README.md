@@ -1,10 +1,11 @@
-🧠 DSA2040A Data Mining Project – Group 1
-📌 Project Title: Mental Health Support Prediction in Tech (U.S. Respondents)
+DSA2040A Data Mining Project – Group 1
+Project Title: Mental Health Support Prediction in Tech (U.S. Respondents)
 This project uses 2014 survey data from the Open Sourcing Mental Illness (OSMI) initiative to predict whether a tech employee is likely to seek mental health treatment based on personal, workplace, and organizational factors. We demonstrate the full data science lifecycle: ETL, data cleaning, EDA, feature engineering, model building, evaluation, insights generation, and deployment.
 
-🎯 Live App: Try the Streamlit App
+Live App: Try the Streamlit App
+https://markchweya-dsa2040a-dat-dsa2040a-datamining-group1appapp-ylspsj.streamlit.app/
 
-👥 Team Members & Contributions
+Team Members & Contributions
 Name	Role & Contribution
 Nathan	End-to-end data pipeline and orchestration
 Nicholas	Data wrangling, encoding, and enrichment
@@ -12,14 +13,14 @@ Faith	Exploratory Data Analysis and Statistical Modeling
 Merhawit	Machine Learning modeling and classification metrics
 Mark	Dashboard creation, Streamlit app development, documentation
 
-📚 Dataset
+Dataset
 Source: OSMI Mental Health in Tech Survey (2014)
 
 Size: ~1,200 responses
 
 Focus: U.S.-only respondents for increased regional reliability
 
-📊 Project Structure
+Project Structure
 sql
 Copy
 Edit
@@ -43,7 +44,7 @@ DSA2040A_DataMining_Group1/
 │
 ├── requirements.txt        ← Streamlit app dependencies
 ├── README.md               ← This file
-🧪 Machine Learning Summary
+Machine Learning Summary
 Target: treatment (Yes/No)
 
 Classifier: Random Forest Classifier
@@ -56,7 +57,7 @@ Accuracy: ~61%
 
 F1 Score: ~66% for treatment-seeking class
 
-✅ Key Features Used
+Key Features Used
 The model was trained on the following variables:
 
 Age
@@ -77,7 +78,7 @@ Access to care options
 
 Protection of anonymity
 
-🧠 Insights From the Data
+Insights From the Data
 Workers with family history and no anonymity protection were more likely to seek treatment.
 
 Smaller companies tended to lack mental health support programs.
@@ -86,7 +87,7 @@ There were gender and age group differences in treatment-seeking patterns.
 
 Access to benefits and care options positively influenced mental health treatment.
 
-🚀 How to Run Locally
+How to Run Locally
 1. Clone the Repo
 bash
 Copy
@@ -105,14 +106,14 @@ Edit
 streamlit run app/app.py
 Ensure the mental_health_model.pkl and the preprocessed dataset are in their expected folders.
 
-📌 Notes
+Notes
 The app supports only U.S. respondents as per the model training scope.
 
 This is not a diagnostic tool, but a demonstration of data mining techniques on real-world survey data.
 
 Model bias may exist due to limited demographics (2014 data, tech sector only).
 
-📎 Future Improvements
+Future Improvements
 Retrain with more recent or diverse datasets (e.g., post-COVID surveys).
 
 Add confidence intervals or probability estimates.
